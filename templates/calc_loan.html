@@ -1,0 +1,20 @@
+{% extends "basebase.html" %}
+
+{% block content %}
+<form>
+  <p>
+        {{ form.value.label }}<br>
+        {{ form.value(size=35) }}
+        <br>
+        {% for error in form.value.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.currency.label }}
+        {{ form.currency(length=35) }}
+    </p>
+  <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+
+{% endblock %}

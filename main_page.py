@@ -37,6 +37,15 @@ def index():
     return render_template('index.html', title='Финансовые калькуляторы')
 
 
+@app.route('/calc/loan')
+def calc_loan():
+    graphemes = ['$', '€', '¥']
+    form = LoanForm()
+    if request.method == 'POST':
+        return 'ok'
+    return render_template('calc_loan.html', title='Кредитный калькулятор', graphemes=graphemes, form=form)
+
+
 @app.route("/login", methods=['POST', 'GET'])
 def login():
     form = LoginForm()
