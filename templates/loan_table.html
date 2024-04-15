@@ -1,29 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Результаты расчета</h1>
+
+<link rel="stylesheet" href="{{url_for('static', filename='styles/loan_table_style.css')}}">
+
+<h1>Результаты расчета</h1><br>
+<h2>Всего выплат: {{loan_table['all_payments']}} {{currency}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Переплата:
+    {{loan_table['total_loan_cost']}} {{currency}}</h2><br>
 
 <table class="table">
-  <thead class="thead-dark">
+    <thead class="thead-dark">
     <tr>
-      <th scope="col">Дата</th>
-      <th scope="col">Платёж</th>
-      <th scope="col">Проценты</th>
-      <th scope="col">Остаток</th>
+        <th scope="col"><h3>Дата</h3></th>
+        <th scope="col"><h3>Платёж</h3></th>
+        <th scope="col"><h3>Проценты</h3></th>
+        <th scope="col"><h3>Остаток</h3></th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
-  {%for item in loan_table["table"]%}
+    <tbody>
+    {%for item in loan_table["table"]%}
     <tr>
-      <th scope="row">{{item["payment date"]}}</th>
-      <td>{{item['monthly_payment']}}</td>
-      <td>{{item['overpay_per']}}</td>
-      <td>{{item['left']}}</td>
+        <th scope="row"><h4>{{item["payment date"]}}</h4></th>
+        <td><h4>{{item['monthly_payment']}}</h4></td>
+        <td><h4>{{item['overpay_per']}}</h4></td>
+        <td><h4>{{item['left']}}</h4></td>
     </tr>
-  {%endfor%}
+    {%endfor%}
 
-  </tbody>
+    </tbody>
 </table>
 
 {% endblock %}

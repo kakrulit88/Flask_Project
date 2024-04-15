@@ -1,20 +1,44 @@
-{% extends "basebase.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<form>
-  <p>
-        {{ form.value.label }}<br>
+<link rel="stylesheet" href="{{url_for('static', filename='styles/loan_table_style.css')}}">
+<form action="" method="POST">
+    <p>
+        {{ form.value.label }}
+        {{ form.currency.label }}<br>
         {{ form.value(size=35) }}
-        <br>
+        {{ form.currency(height=50) }}
+        <br><br>
         {% for error in form.value.errors %}
-            <span style="color: red;">{{ error }}</span>
+        <span style="color: red;">{{ error }}</span>
         {% endfor %}
     </p>
-    <p>
-        {{ form.currency.label }}
-        {{ form.currency(length=35) }}
+    <p>{{form.percent.label}}<br>
+        {{form.percent}}
+        <br><br>
+        {% for error in form.percent.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
     </p>
-  <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <p>{{form.loan_time.label}}<br>
+        {{form.loan_time}} {{form.loan_time_type}}
+        <br><br>
+        {% for error in form.loan_time.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>{{form.loan_date.label}}<br>
+        {{form.loan_date}}
+        <br><br>
+        {% for error in form.loan_date.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>{{form.pay_type.label}}<br>
+        {{form.pay_type}}
+    </p>
+    <p>{{form.submit(type="submit", class="btn btn-primary") }}</p>
+
 </form>
 
 {% endblock %}

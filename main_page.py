@@ -1,4 +1,6 @@
-from flask import Flask, request, make_response, render_template, redirect, abort
+from datetime import timedelta
+
+from flask import Flask, request, make_response, render_template, redirect, abort, url_for
 from flask_wtf import FlaskForm
 from wtforms import EmailField, StringField, SubmitField, PasswordField, BooleanField, IntegerField
 from wtforms.validators import DataRequired
@@ -26,6 +28,63 @@ def get_value():
     result = soup.find("div", class_="webanswers-webanswers_table__webanswers-table").find('table').find_all('th')
 
 
+def get_annuity_loan_table(value, percent, loan_time, loan_time_type, loan_date):
+    monthly_percent = percent / 1200
+    if loan_time_type == 'года':
+        loan_time *= 12
+
+    monthly_payment = round(value * (
+            monthly_percent * ((1 + monthly_percent) ** loan_time) / ((1 + monthly_percent) ** loan_time - 1)), 2)
+
+    month_count = (loan_date + timedelta(weeks=loan_time * 4))
+    total_loan_cost = 0
+    all_payments = value
+    loan_table = {'total_loan_cost': 0,
+                  'all_payments': 0,
+                  'table': [{'payment date': str(loan_date),
+                             'monthly_payment': "{0:0.2f}".format(0.00),
+                             'overpay_loan': "{0:0.2f}".format(0.00),
+                             'overpay_per': "{0:0.2f}".format(0.00),
+                             'left': value}]
+                  }
+    for month in range(loan_time):
+        loan_date += timedelta(days=30)
+        overpay_per = round(value * monthly_percent, 2)
+        overpay_loan = round(monthly_payment - overpay_per, 2)
+        value = round(value + overpay_per - monthly_payment, 2)
+        total_loan_cost += overpay_per
+        loan_table['table'].append({'payment date': str(loan_date), 'monthly_payment': monthly_payment,
+                                    'overpay_loan': overpay_loan, 'overpay_per': "{0:0.2f}".format(overpay_per),
+                                    'left': "{0:0.2f}".format(value)})
+    total_loan_cost = round(total_loan_cost)
+    all_payments += total_loan_cost
+    loan_table['total_loan_cost'] = total_loan_cost
+    loan_table['all_payments'] = all_payments
+
+    return loan_table
+
+
+def get_different_loan_table(value, percent, loan_time, loan_time_type, loan_date):
+    monthly_percent = percent / 1200
+    if loan_time_type == 'года':
+        loan_time *= 12
+
+    total_loan_cost = 0
+    all_payments = value
+    loan_table = {'total_loan_cost': 0,
+                  'all_payments': 0,
+                  'table': [{'payment date': str(loan_date),
+                             'monthly_payment': "{0:0.2f}".format(0.00),
+                             'overpay_loan': "{0:0.2f}".format(0.00),
+                             'overpay_per': "{0:0.2f}".format(0.00),
+                             'left': value}]
+                  }
+
+    for month in range(loan_time):
+        loan_date += timedelta(days=30)
+    return loan_table
+
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -37,13 +96,28 @@ def index():
     return render_template('index.html', title='Финансовые калькуляторы')
 
 
-@app.route('/calc/loan')
+@app.route('/calc/loan', methods=['POST', 'GET'])
 def calc_loan():
-    graphemes = ['$', '€', '¥']
     form = LoanForm()
     if request.method == 'POST':
-        return 'ok'
-    return render_template('calc_loan.html', title='Кредитный калькулятор', graphemes=graphemes, form=form)
+        value = form.value.data
+        percent = form.percent.data
+        loan_time = form.loan_time.data
+        loan_time_type = form.loan_time_type.data
+        loan_date = form.loan_date.data
+        pay_type = form.pay_type.data
+        currency = form.currency.data
+        if pay_type == 'Аннуитетный':
+            loan_table = get_annuity_loan_table(value=value, percent=percent, loan_time=loan_time,
+                                                loan_time_type=loan_time_type,
+                                                loan_date=loan_date)
+        else:
+            loan_table = get_different_loan_table(value=value, percent=percent, loan_time=loan_time,
+                                                  loan_time_type=loan_time_type,
+                                                  loan_date=loan_date)
+
+        return render_template('loan_table.html', loan_table=loan_table, currency=currency)
+    return render_template('calc_loan.html', title='Кредитный калькулятор', form=form)
 
 
 @app.route("/login", methods=['POST', 'GET'])
