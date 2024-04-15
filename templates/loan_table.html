@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Результаты расчета</h1>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Дата</th>
+      <th scope="col">Платёж</th>
+      <th scope="col">Проценты</th>
+      <th scope="col">Остаток</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {%for item in loan_table["table"]%}
+    <tr>
+      <th scope="row">{{item["payment date"]}}</th>
+      <td>{{item['monthly_payment']}}</td>
+      <td>{{item['overpay_per']}}</td>
+      <td>{{item['left']}}</td>
+    </tr>
+  {%endfor%}
+
+  </tbody>
+</table>
+
+{% endblock %}
