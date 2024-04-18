@@ -1,16 +1,19 @@
 from datetime import timedelta
 
 from flask import Flask, request, make_response, render_template, redirect, abort, url_for
+
 from flask_wtf import FlaskForm
 from wtforms import EmailField, StringField, SubmitField, PasswordField, BooleanField, IntegerField
 from wtforms.validators import DataRequired
+
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+
 import requests
 from bs4 import BeautifulSoup
 import lxml
 
 from data.users import User
-
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from data import db_session
 from data.forms import *
 
@@ -41,47 +44,71 @@ def get_annuity_loan_table(value, percent, loan_time, loan_time_type, loan_date)
     all_payments = value
     loan_table = {'total_loan_cost': 0,
                   'all_payments': 0,
-                  'table': [{'payment date': str(loan_date),
+                  'table': [{'id': 0,
+                             'payment date': str(loan_date),
                              'monthly_payment': "{0:0.2f}".format(0.00),
                              'overpay_loan': "{0:0.2f}".format(0.00),
                              'overpay_per': "{0:0.2f}".format(0.00),
                              'left': value}]
                   }
-    for month in range(loan_time):
+    for month in range(1, loan_time + 1):
         loan_date += timedelta(days=30)
         overpay_per = round(value * monthly_percent, 2)
         overpay_loan = round(monthly_payment - overpay_per, 2)
         value = round(value + overpay_per - monthly_payment, 2)
         total_loan_cost += overpay_per
-        loan_table['table'].append({'payment date': str(loan_date), 'monthly_payment': monthly_payment,
-                                    'overpay_loan': overpay_loan, 'overpay_per': "{0:0.2f}".format(overpay_per),
+        loan_table['table'].append({'id': month,
+                                    'payment date': str(loan_date),
+                                    'monthly_payment': monthly_payment,
+                                    'overpay_loan': overpay_loan,
+                                    'overpay_per': "{0:0.2f}".format(overpay_per),
                                     'left': "{0:0.2f}".format(value)})
+
     total_loan_cost = round(total_loan_cost)
     all_payments += total_loan_cost
     loan_table['total_loan_cost'] = total_loan_cost
     loan_table['all_payments'] = all_payments
+    loan_table['table'][-1]['left'] = 0
 
     return loan_table
 
 
 def get_different_loan_table(value, percent, loan_time, loan_time_type, loan_date):
-    monthly_percent = percent / 1200
     if loan_time_type == 'года':
         loan_time *= 12
+    monthly_payment_without_pers = round(value / loan_time, 2)
 
     total_loan_cost = 0
     all_payments = value
     loan_table = {'total_loan_cost': 0,
                   'all_payments': 0,
-                  'table': [{'payment date': str(loan_date),
+                  'table': [{'id': 0,
+                             'payment date': str(loan_date),
                              'monthly_payment': "{0:0.2f}".format(0.00),
                              'overpay_loan': "{0:0.2f}".format(0.00),
                              'overpay_per': "{0:0.2f}".format(0.00),
                              'left': value}]
                   }
 
-    for month in range(loan_time):
+    for month in range(1, loan_time + 1):
         loan_date += timedelta(days=30)
+        monthly_pers = round((value * (percent / 100) * 30) / 365, 2)
+        monthly_payment = round(monthly_payment_without_pers + monthly_pers, 2)
+        total_loan_cost += monthly_pers
+        value -= monthly_payment_without_pers
+        loan_table['table'].append({'id': month,
+                                    'payment date': str(loan_date),
+                                    'monthly_payment': "{0:0.2f}".format(monthly_payment),
+                                    'overpay_loan': monthly_payment_without_pers,
+                                    'overpay_per': "{0:0.2f}".format(monthly_pers),
+                                    'left': "{0:0.2f}".format(value)})
+
+    total_loan_cost = round(total_loan_cost)
+    all_payments += total_loan_cost
+    loan_table['total_loan_cost'] = total_loan_cost
+    loan_table['all_payments'] = all_payments
+    loan_table['table'][-1]['left'] = 0
+
     return loan_table
 
 
@@ -154,6 +181,14 @@ def register():
 def logout():
     logout_user()
     return redirect("/")
+
+
+def set_password(self, password):
+    self.hashed_password = generate_password_hash(password)
+
+
+def check_password(self, password):
+    return check_password_hash(self.hashed_password, password)
 
 
 if __name__ == '__main__':

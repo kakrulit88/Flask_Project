@@ -11,6 +11,7 @@
 <table class="table">
     <thead class="thead-dark">
     <tr>
+        <th scope="col"><h3>№</h3></th>
         <th scope="col"><h3>Дата</h3></th>
         <th scope="col"><h3>Платёж</h3></th>
         <th scope="col"><h3>Проценты</h3></th>
@@ -21,7 +22,8 @@
     <tbody>
     {%for item in loan_table["table"]%}
     <tr>
-        <th scope="row"><h4>{{item["payment date"]}}</h4></th>
+        <th scope="row"><h4>{{item['id']}}</h4></th>
+        <th> <h4>{{item["payment date"]}}</h4></th>
         <td><h4>{{item['monthly_payment']}}</h4></td>
         <td><h4>{{item['overpay_per']}}</h4></td>
         <td><h4>{{item['left']}}</h4></td>
