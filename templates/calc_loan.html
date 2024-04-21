@@ -2,42 +2,48 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{url_for('static', filename='styles/loan_table_style.css')}}">
+<h1 align="center">Кредитный калькулятор</h1>
+<h3 align="center">Позволяет легко и быстро рассчитать график платежей по интересующему вас кредиту, оценить свои
+    возможности погасить
+    долг без просрочек. Введите несколько параметров кредита, подберите удобные для вас условия и сравните их с
+    предложениями разных банков.</h3><br>
 <form action="" method="POST">
     <p>
-        {{ form.value.label }}
-        {{ form.currency.label }}<br>
-        {{ form.value(size=35) }}
-        {{ form.currency(height=50) }}
-        <br><br>
-        {% for error in form.value.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}
+    <h2 align="center">{{ form.value.label }}</h2>
+    <h3 align="center"> {{ form.value(size=35) }} {{ form.currency(height=50) }}</h3>
+    {% for error in form.value.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}
     </p>
-    <p>{{form.percent.label}}<br>
-        {{form.percent}}
-        <br><br>
-        {% for error in form.percent.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}
+    <p>
+    <h2 align="center">{{form.percent.label}}</h2>
+    <h3 align="center"> {{form.percent}}</h3>
+
+    {% for error in form.percent.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}
     </p>
-    <p>{{form.loan_time.label}}<br>
-        {{form.loan_time}} {{form.loan_time_type}}
-        <br><br>
-        {% for error in form.loan_time.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}
+    <p>
+    <h2 align="center"> {{form.loan_time.label}}</h2>
+    <h3 align="center"> {{form.loan_time}} {{form.loan_time_type}}</h3>
+
+    {% for error in form.loan_time.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}
     </p>
-    <p>{{form.loan_date.label}}<br>
-        {{form.loan_date}}
-        <br><br>
-        {% for error in form.loan_date.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}
+    <p>
+    <h2 align="center">{{form.loan_date.label}}</h2>
+    <h3 align="center">{{form.loan_date}}</h3>
+    {% for error in form.loan_date.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}
     </p>
-    <p>{{form.pay_type.label}}<br>
-        {{form.pay_type}}
+    <p>
+    <h2 align="center">{{form.pay_type.label}}</h2>
+    <h3 align="center">{{form.pay_type}}</h3>
     </p>
-    <p>{{form.submit(type="submit", class="btn btn-primary") }}</p>
+    <p>
+    <h1 align="center">{{form.submit(type="submit", class="btn btn-primary") }}</h1></p>
 
 </form>
 

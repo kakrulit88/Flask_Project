@@ -39,3 +39,17 @@ class LoanForm(FlaskForm):
                            choices=[('Аннуитетный', 'Аннуитетный'), ('Дифференцированный', 'Дифференцированный')],
                            validate_choice=False, validators=[DataRequired()])
     submit = SubmitField('Расчитать')
+
+
+class DepositForm(FlaskForm):
+    value = IntegerField('Cумма вклада', validators=[DataRequired()], default=1000000)
+    currency = SelectField('Валюта',
+                           choices=[('₽', '₽'), ('$', '$'), ('€', '€'), ('¥', '¥')],
+                           validate_choice=False, validators=[DataRequired()])
+    deposit_time = IntegerField('Срок вклада', validators=[DataRequired()], default=1)
+    deposit_time_type = SelectField(
+        choices=[('года', 'года'), ('месяца', 'месяца')],
+        validate_choice=False, validators=[DataRequired()])
+    percent = FloatField('Процентная ставка/ % годовых', validators=[DataRequired()], default=5.00)
+    loan_date = DateField('Дата открытия', validators=[DataRequired()], default=date.today())
+    submit = SubmitField('Расчитать')

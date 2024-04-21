@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{url_for('static', filename='styles/loan_table_style.css')}}">
+
+<h1>Результаты расчета</h1><br>
+<h2>Сумма в конце срока: {{deposit_table['total_value']}} {{currency}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Доход:
+    {{deposit_table['total_profit']}} {{currency}}</h2><br>
+
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col"><h3>№</h3></th>
+        <th scope="col"><h3>Дата</h3></th>
+        <th scope="col"><h3>Начислено процентов	</h3></th>
+        <th scope="col"><h3>Остаток вклада</h3></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {%for item in deposit_table["table"]%}
+    <tr>
+        <th scope="row"><h4>{{item['id']}}</h4></th>
+        <th> <h4>{{item['payment date']}}</h4></th>
+        <td><h4>{{item['profit']}}</h4></td>
+        <td><h4>{{item['current_value']}}</h4></td>
+    </tr>
+    {%endfor%}
+
+    </tbody>
+</table>
+
+{% endblock %}
