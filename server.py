@@ -1,6 +1,7 @@
 from flask import Flask, request, make_response, render_template, redirect, abort, url_for
 from flask_restful import reqparse, abort, Api, Resource
 from data.api_resources import DepositApi, LoanApi
+import os
 
 from flask_wtf import FlaskForm
 from wtforms import EmailField, StringField, SubmitField, PasswordField, BooleanField, IntegerField
@@ -9,10 +10,6 @@ from wtforms.validators import DataRequired
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-import requests
-from bs4 import BeautifulSoup
-import lxml
-
 from data.users import User
 from data import db_session
 from data.forms import *
@@ -20,6 +17,7 @@ from data.calculators import get_annuity_loan_table, get_different_loan_table, g
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+MAIN_URL = 'https://127.0.0.1/'
 
 api = Api(app)
 api.add_resource(LoanApi, '/api/calc_loan')
@@ -27,13 +25,6 @@ api.add_resource(DepositApi, '/api/calc_deposit')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-
-# def get_value():
-#     url = 'https://www.google.com/search?q=курс+рубля+к+валютам'
-#     response = requests.get(url)
-#     soup = BeautifulSoup(response.content, "lxml")
-#     result = soup.find("div", class_="webanswers-webanswers_table__webanswers-table").find('table').find_all('th')
 
 
 @login_manager.user_loader
@@ -90,7 +81,7 @@ def calc_deposit():
 
 @app.route('/api_info')
 def api():
-    return render_template('api_info.html', title='Апи: кредиты/вклады')
+    return render_template('api_info.html', title='Апи: кредиты/вклады', MAIN_URL=MAIN_URL)
 
 
 @app.route("/login", methods=['POST', 'GET'])
@@ -99,9 +90,10 @@ def login():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user:
+        if user and user.hashed_password == form.password.data:
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
+        return render_template('login.html', title='Авторизация', form=form, message='Неверный логин или пароль')
     return render_template('login.html', title='Авторизация', form=form)
 
 
@@ -126,7 +118,12 @@ def register():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect("/")
+    return redirect('/')
+
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return redirect('/register')
 
 
 def set_password(self, password):
@@ -139,4 +136,5 @@ def check_password(self, password):
 
 if __name__ == '__main__':
     db_session.global_init('db/users_data.db')
-    app.run(port=8080, host='127.0.0.1')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(port=port, host='0.0.0.0')

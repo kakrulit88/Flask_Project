@@ -18,6 +18,23 @@
 <body>
 <header>
     <nav class="navbar navbar-light bg-light">
+        <p>
+            <a class="btn btn-warning" href="/" role="button">&nbsp&nbsp&nbsp&nbspГлавная&nbsp&nbsp&nbsp</a>
+            <a class="btn btn-info" href="/api_info" role="button">&nbsp&nbsp&nbsp&nbsp&nbsp&nbspApi&nbsp&nbsp&nbsp&nbsp&nbsp</a>
+        </p>
+        <div class="dropdown show">
+            <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+               data-toggle="dropdown">
+                Калькуляторы&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="/calc/loan"><h4>Кредитный</h4></a>
+                <a class="dropdown-item" href="/calc/deposit"><h4>Депозитный</h4></a>
+            </div>
+        </div>
+
+
         <a class="navbar-brand" href="#"></a>
         {% if current_user.is_authenticated %}
         <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>

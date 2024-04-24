@@ -13,7 +13,7 @@ class RegisterForm(FlaskForm):
     age = IntegerField('Ваш возраст')
     password = PasswordField('Придумайте пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    submit = SubmitField('Зарегестрироватся')
+    submit = SubmitField('Создать аккаунт')
 
 
 class LoginForm(FlaskForm):

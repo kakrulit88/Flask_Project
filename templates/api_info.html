@@ -6,7 +6,7 @@
 <h2>Параметы post запроса для кредита:</h2><br>
 
 <ul class="list-group">
-    <li class="list-group-item"><h4>Адрес: /api/calc_deposit</h4></li>
+    <li class="list-group-item"><h4>Адрес: {{MAIN_URL}}api/calc_deposit</h4></li>
     <li class="list-group-item"><h4>"value": сумма кредита (int)</h4></li>
     <li class="list-group-item"><h4>"percent": процент (float)</h4></li>
     <li class="list-group-item"><h4>"loan_time": срок кредита в месяцах (int)</h4></li>
@@ -14,7 +14,7 @@
     <li class="list-group-item"><h4>"loan_date": дата выдачи (год-месяц-день)</h4></li>
 </ul><br>
 <h2>Пример запроса:</h2>
-<p><code><h3>from requests import post<br><br>request = post('http://127.0.0.1:8080/api/calc_loan', json={<br>
+<p><code><h3>from requests import post<br><br>request = post('{{MAIN_URL}}api/calc_loan', json={<br>
     "value": 1000000,<br>
     "percent": 5.00,<br>
     "loan_time": 36,<br>
@@ -24,7 +24,7 @@
 <h2>Параметы post запроса для вклада:</h2><br>
 
 <ul class="list-group">
-    <li class="list-group-item"><h4>Адрес: /api/calc_deposit</h4></li>
+    <li class="list-group-item"><h4>Адрес: {{MAIN_URL}}api/calc_deposit</h4></li>
     <li class="list-group-item"><h4>"value": сумма кредита (int)</h4></li>
     <li class="list-group-item"><h4>"percent": процент (float)</h4></li>
     <li class="list-group-item"><h4>"loan_time": срок кредита в месяцах (int)</h4></li>
@@ -32,7 +32,7 @@
     <li class="list-group-item"><h4>"loan_date": дата выдачи (год-месяц-день)</h4></li>
 </ul>
 <h2>Пример запроса:</h2>
-<p><code><h3>from requests import post<br><br> request = post('http://127.0.0.1:8080/api/calc_deposit', json={<br>
+<p><code><h3>from requests import post<br><br> request = post('{{MAIN_URL}}api/calc_deposit', json={<br>
     "value": 1000000,<br>
     "percent": 5.00,<br>
     "deposit_time": 36,<br>

@@ -54,7 +54,7 @@ def get_different_loan_table(value, percent, loan_time, loan_time_type, loan_dat
     loan_table = {'total_loan_cost': 0,
                   'all_payments': 0,
                   'table': [{'id': 0,
-                             'payment date': str(loan_date),
+                             'payment date': str(loan_date).split(' ')[0],
                              'monthly_payment': "{0:0.2f}".format(0.00),
                              'overpay_loan': "{0:0.2f}".format(0.00),
                              'overpay_per': "{0:0.2f}".format(0.00),
@@ -63,12 +63,15 @@ def get_different_loan_table(value, percent, loan_time, loan_time_type, loan_dat
 
     for month in range(1, loan_time + 1):
         loan_date += timedelta(days=30)
+        if ' ' in str(loan_date):
+            current_date = str(loan_date).split(' ')[0]
+        else: current_date = str(loan_date)
         monthly_pers = round((value * (percent / 100) * 30) / 365, 2)
         monthly_payment = round(monthly_payment_without_pers + monthly_pers, 2)
         total_loan_cost += monthly_pers
         value -= monthly_payment_without_pers
         loan_table['table'].append({'id': month,
-                                    'payment date': str(loan_date),
+                                    'payment date': current_date,
                                     'monthly_payment': "{0:0.2f}".format(monthly_payment),
                                     'overpay_loan': monthly_payment_without_pers,
                                     'overpay_per': "{0:0.2f}".format(monthly_pers),
@@ -92,18 +95,21 @@ def get_deposit_table(value, percent, deposit_time, deposit_time_type, loan_date
     deposit_table = {'total_profit': 0,
                      'total_value': 0,
                      'table': [{'id': 0,
-                                'payment date': str(loan_date),
+                                'payment date': str(loan_date).split(' ')[0],
                                 'profit': "{0:0.2f}".format(0.00),
                                 'current_value': value}]
                      }
     for month in range(1, deposit_time + 1):
         loan_date += timedelta(days=30)
+        if ' ' in str(loan_date):
+            current_date = str(loan_date).split(' ')[0]
+        else: current_date = str(loan_date)
         new_value = round(current_value * percent / 365 * 30, 2)
         total_profit += new_value
         current_value += new_value
         deposit_table['table'].append({
             'id': month,
-            'payment date': str(loan_date),
+            'payment date': current_date,
             'profit': "{0:0.2f}".format(new_value),
             'current_value': "{0:0.2f}".format(current_value)
         })

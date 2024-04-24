@@ -1,4 +1,4 @@
-from flask_restful import Resource, abort
+from flask_restful import Resource
 from flask import jsonify, redirect
 from data.data_parser import deposit_parser, loan_parser
 from data.calculators import get_deposit_table, get_different_loan_table, get_annuity_loan_table
@@ -7,7 +7,7 @@ from datetime import datetime
 
 class LoanApi(Resource):
     def get(self):
-        return redirect('/api')
+        return redirect('/api_info')
 
     def post(self):
         args = loan_parser.parse_args()
@@ -25,7 +25,7 @@ class LoanApi(Resource):
 
 class DepositApi(Resource):
     def get(self):
-        return redirect('/api')
+        return redirect('/api_info')
 
     def post(self):
         args = deposit_parser.parse_args()
