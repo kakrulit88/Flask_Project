@@ -17,7 +17,7 @@ from data.calculators import get_annuity_loan_table, get_different_loan_table, g
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-MAIN_URL = 'https://127.0.0.1/'
+MAIN_URL = 'https://sasha31q.pythonanywhere.com/'
 
 api = Api(app)
 api.add_resource(LoanApi, '/api/calc_loan')
@@ -136,5 +136,4 @@ def check_password(self, password):
 
 if __name__ == '__main__':
     db_session.global_init('db/users_data.db')
-    port = int(os.environ.get("PORT", 5000))
-    app.run(port=port, host='0.0.0.0')
+    app.run(port=8080, host='127.0.0.1')
