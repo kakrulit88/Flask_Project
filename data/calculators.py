@@ -5,7 +5,6 @@ def get_annuity_loan_table(value, percent, loan_time, loan_time_type, loan_date)
     monthly_percent = percent / 1200
     if loan_time_type == 'года':
         loan_time *= 12
-    print(value, percent, loan_time, loan_time_type, loan_date)
 
     monthly_payment = round(value * (
             monthly_percent * ((1 + monthly_percent) ** loan_time) / ((1 + monthly_percent) ** loan_time - 1)), 2)
